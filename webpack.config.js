@@ -7,7 +7,9 @@ const pkgbuild = require("ollieos_pkgbuild");
 // key: the name of the program
 // value: the path to the entry point
 const programs = {
-    "lodestard": "./src/index.ts",
+    "lodestard": "./src/daemon/index.ts",
+    "lodestar-send": "./src/send/index.ts",
+    "lodestar-sub-test": "./src/sub_test/index.ts",
 };
 
 // EDIT THIS ARRAY TO ADD DEPENDENCIES FOR THE VERSION CURRENTLY BEING BUILT

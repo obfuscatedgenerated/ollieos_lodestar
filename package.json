@@ -2,7 +2,7 @@
   "name": "lodestar",
   "version": "1.0.0",
   "description": "Lodestar - Pub/Sub IPC Star Network",
-  "main": "./src/index.ts",
+  "main": "src/daemon/index.ts",
   "scripts": {
     "build": "webpack --mode=production",
     "watch": "webpack --watch --mode=development",
