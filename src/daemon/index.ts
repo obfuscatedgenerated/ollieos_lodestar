@@ -1,13 +1,9 @@
 import type { Program } from "ollieos/types";
+import type { IPCMessage } from "ollieos/processes";
+
 import {check_subscribed, get_all_subscribers, subscribe, unsubscribe, validate_syntax} from "./topic_trie";
 
 const SERVICE_NAME = "lodestar";
-
-// TODO forgot to export this type from ollieos/types
-interface IPCMessage {
-    from: number;
-    data: unknown;
-}
 
 interface LodestarMessageBase {
     type: "subscribe" | "unsubscribe" | "publish";
@@ -33,6 +29,7 @@ export default {
     name: "lodestard",
     description: "Lodestar - Pub/Sub IPC Star Network",
     usage_suffix: "",
+    hide_from_help: true,
     arg_descriptions: {},
     main: async (data) => {
         const { term, process } = data;

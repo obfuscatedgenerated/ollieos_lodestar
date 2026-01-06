@@ -1,6 +1,6 @@
 {
   "name": "lodestar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lodestar - Pub/Sub IPC Star Network",
   "main": "src/daemon/index.ts",
   "scripts": {
