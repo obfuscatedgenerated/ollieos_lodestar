@@ -1,6 +1,6 @@
 # Lodestar
 
-Pub/Sub IPC Star Network
+Pub/Sub IPC Star Network for OllieOS
 
 ## Usage
 
