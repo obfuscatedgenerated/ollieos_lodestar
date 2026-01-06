@@ -1,7 +1,7 @@
 {
-  "name": "hwpkg",
-  "version": "1.0.1",
-  "description": "An example package named hwpkg that prints a hello message for OllieOS.",
+  "name": "lodestar",
+  "version": "1.0.0",
+  "description": "Lodestar - Pub/Sub IPC Star Network",
   "main": "./src/index.ts",
   "scripts": {
     "build": "webpack --mode=production",
@@ -18,6 +18,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/obfuscatedgenerated/ollieos_test_pkg.git"
+    "url": "git+https://github.com/obfuscatedgenerated/ollieos_lodestar.git"
   }
 }
