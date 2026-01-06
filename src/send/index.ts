@@ -33,6 +33,7 @@ export default {
             // parse message
             try {
                 message = JSON.parse(message_txt);
+                // TODO: not working?
             } catch (e) {
                 term.writeln("Failed to parse message as JSON.");
                 return 1;
