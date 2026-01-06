@@ -100,12 +100,7 @@ export const check_subscribed = (topic: string, channel_id: number): boolean => 
 }
 
 export const validate_syntax = (topic: string): boolean => {
-    // trailing or leading dots are not allowed
-    if (topic.startsWith(".") || topic.endsWith(".")) {
-        return false;
-    }
-
-    const parts = topic.split(".").filter((part) => part.length > 0);
+    const parts = topic.split(".");
 
     for (const part of parts) {
         if (part.length === 0) {
