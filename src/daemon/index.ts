@@ -151,8 +151,8 @@ export default {
         }
 
         // register service to receive messages
-        ipc.service_register(SERVICE_NAME, process.pid, (channel_id) => {
-            ipc.channel_listen(channel_id, process.pid, (msg) => handle_message(channel_id, msg));
+        ipc.service_register(SERVICE_NAME, process.pid, async (channel_id) => {
+            ipc.channel_listen(channel_id, process.pid, async (msg) => handle_message(channel_id, msg));
         });
 
         return 0;

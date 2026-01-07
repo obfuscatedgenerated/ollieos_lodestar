@@ -28,7 +28,7 @@ export default {
         }
 
         // listen for confirmation message or error
-        ipc.channel_listen(channel, process.pid, (msg) => {
+        ipc.channel_listen(channel, process.pid, async (msg) => {
             const msg_data = msg.data as { type: string; [key: string]: any };
 
             if (msg_data.type === "error") {
