@@ -1,0 +1,11 @@
+{
+  "name": "Lodestar",
+  "dependencies": [],
+  "exec": "lodestard",
+  "oneshot": false,
+  "restart": {
+    "on": "failure",
+    "delay_ms": 1000,
+    "max_retries": 5
+  }
+}
