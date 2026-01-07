@@ -14,7 +14,7 @@ const programs = {
 
 // EDIT THIS ARRAY TO ADD DEPENDENCIES FOR THE VERSION CURRENTLY BEING BUILT
 // format: name@version
-const deps = [];
+const deps = ["ignition_triggers"];
 
 // EDIT THIS TO CHANGE THE HOMEPAGE URL
 const homepage_url = "https://ollieg.codes";
@@ -33,7 +33,7 @@ const additional_files = [
 // key: the name of the trigger
 // value: any data to pass to the trigger
 const triggers = {
-    "register_service": "lodestard.service.json",
+    "ignition_triggers/register_service": "lodestard.service.json",
 };
 
 module.exports = pkgbuild(programs, deps, homepage_url, externals, triggers, additional_files);
