@@ -31,10 +31,11 @@ export default {
     usage_suffix: "",
     hide_from_help: true,
     arg_descriptions: {},
+    compat: "2.0.0",
     main: async (data) => {
-        const { term, process } = data;
+        const { kernel, term, process } = data;
 
-        const ipc = term.get_ipc();
+        const ipc = kernel.get_ipc();
 
         // check if service is already running
         if (ipc.service_lookup(SERVICE_NAME)) {

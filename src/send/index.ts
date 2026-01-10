@@ -11,11 +11,12 @@ export default {
             "-j": "Indicates that the message is in JSON format, rather than plain text.",
         },
     },
+    compat: "2.0.0",
     main: async (data) => {
-        const {term, args, process} = data;
+        const {kernel, term, args, process} = data;
 
         if (args.length < 2) {
-            term.execute("help lodestar-send");
+            term.writeln("Usage: lodestar-send <topic> [-j] <message>");
             return 1;
         }
 
@@ -42,7 +43,7 @@ export default {
             message = message_txt;
         }
 
-        const ipc = term.get_ipc();
+        const ipc = kernel.get_ipc();
         const channel = ipc.create_channel(process.pid, "lodestar");
 
         if (!channel) {

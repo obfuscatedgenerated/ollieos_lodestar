@@ -9,17 +9,18 @@ export default {
             "topic": "The topic to subscribe to. Wildcards are supported.",
         },
     },
+    compat: "2.0.0",
     main: async (data) => {
-        const {term, args, process} = data;
+        const {kernel, term, args, process} = data;
 
         if (args.length < 1) {
-            term.execute("help lodestar-sub-test");
+            term.writeln("Usage: lodestar-sub-test <topic>");
             return 1;
         }
 
         const topic = args[0];
 
-        const ipc = term.get_ipc();
+        const ipc = kernel.get_ipc();
         const channel = ipc.create_channel(process.pid, "lodestar");
 
         if (!channel) {
