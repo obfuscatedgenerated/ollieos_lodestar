@@ -1,5 +1,5 @@
 import type { Program } from "ollieos/types";
-import type { IPCMessage } from "ollieos/processes";
+import type { IPCMessage } from "ollieos/kernel/processes";
 
 import {check_subscribed, get_all_subscribers, subscribe, unsubscribe, validate_syntax} from "./topic_trie";
 
@@ -31,14 +31,14 @@ export default {
     usage_suffix: "",
     hide_from_help: true,
     arg_descriptions: {},
-    compat: "2.0.0",
+    compat: "3.0.0",
     main: async (data) => {
         const { kernel, term, process } = data;
 
         const ipc = kernel.get_ipc();
 
         // check if service is already running
-        if (ipc.service_lookup(SERVICE_NAME)) {
+        if (await ipc.service_lookup(SERVICE_NAME)) {
             term.writeln("Lodestar service is already running.");
             return 1;
         }
@@ -49,7 +49,7 @@ export default {
         const handle_message = (channel_id: number, msg: IPCMessage) => {
             // check msg is an object
             if (typeof msg.data !== "object" || msg.data === null) {
-                ipc.channel_send(channel_id, process.pid, { type: "error", message: "Invalid message format." });
+                ipc.channel_send(channel_id, { type: "error", message: "Invalid message format." });
                 return;
             }
 
@@ -61,19 +61,19 @@ export default {
 
                     // check topic is a string
                     if (typeof subscribe_msg.topic !== "string") {
-                        ipc.channel_send(channel_id, process.pid, { type: "error", message: "Topic must be a string." });
+                        ipc.channel_send(channel_id, { type: "error", message: "Topic must be a string." });
                         return;
                     }
 
                     // validate topic
                     if (!validate_syntax(subscribe_msg.topic)) {
-                        ipc.channel_send(channel_id, process.pid, { type: "error", message: "Invalid topic syntax." });
+                        ipc.channel_send(channel_id, { type: "error", message: "Invalid topic syntax." });
                         return;
                     }
 
                     // check for existing subscription
                     if (check_subscribed(subscribe_msg.topic, channel_id)) {
-                        ipc.channel_send(channel_id, process.pid, { type: "warning", message: "Already subscribed to topic." });
+                        ipc.channel_send(channel_id, { type: "warning", message: "Already subscribed to topic." });
                         return;
                     }
 
@@ -81,7 +81,7 @@ export default {
                     subscribe(subscribe_msg.topic, channel_id);
 
                     // notify success
-                    ipc.channel_send(channel_id, process.pid, { type: "subscribe_ack", topic: subscribe_msg.topic });
+                    ipc.channel_send(channel_id, { type: "subscribe_ack", topic: subscribe_msg.topic });
 
                     break;
                 case "unsubscribe":
@@ -89,19 +89,19 @@ export default {
 
                     // check topic is a string
                     if (typeof unsubscribe_msg.topic !== "string") {
-                        ipc.channel_send(channel_id, process.pid, { type: "error", message: "Topic must be a string." });
+                        ipc.channel_send(channel_id, { type: "error", message: "Topic must be a string." });
                         return;
                     }
 
                     // validate topic
                     if (!validate_syntax(unsubscribe_msg.topic)) {
-                        ipc.channel_send(channel_id, process.pid, { type: "error", message: "Invalid topic syntax." });
+                        ipc.channel_send(channel_id, { type: "error", message: "Invalid topic syntax." });
                         return;
                     }
 
                     // check for existing subscription
                     if (!check_subscribed(unsubscribe_msg.topic, channel_id)) {
-                        ipc.channel_send(channel_id, process.pid, { type: "warning", message: "Not subscribed to topic." });
+                        ipc.channel_send(channel_id, { type: "warning", message: "Not subscribed to topic." });
                         return;
                     }
 
@@ -109,7 +109,7 @@ export default {
                     unsubscribe(unsubscribe_msg.topic, channel_id);
 
                     // notify success
-                    ipc.channel_send(channel_id, process.pid, { type: "unsubscribe_ack", topic: unsubscribe_msg.topic });
+                    ipc.channel_send(channel_id, { type: "unsubscribe_ack", topic: unsubscribe_msg.topic });
 
                     break;
                 case "publish":
@@ -117,19 +117,19 @@ export default {
 
                     // check topic is a string
                     if (typeof publish_msg.topic !== "string") {
-                        ipc.channel_send(channel_id, process.pid, { type: "error", message: "Topic must be a string." });
+                        ipc.channel_send(channel_id, { type: "error", message: "Topic must be a string." });
                         return;
                     }
 
                     // topic cannot contain wildcards when publishing
                     if (publish_msg.topic.includes("*")) {
-                        ipc.channel_send(channel_id, process.pid, { type: "error", message: "Topic cannot contain wildcards when publishing." });
+                        ipc.channel_send(channel_id, { type: "error", message: "Topic cannot contain wildcards when publishing." });
                         return;
                     }
 
                     // validate topic
                     if (!validate_syntax(publish_msg.topic)) {
-                        ipc.channel_send(channel_id, process.pid, { type: "error", message: "Invalid topic syntax." });
+                        ipc.channel_send(channel_id, { type: "error", message: "Invalid topic syntax." });
                         return;
                     }
 
@@ -141,21 +141,21 @@ export default {
                             continue;
                         }
 
-                        ipc.channel_send(sub_channel_id, process.pid, { type: "message", topic: publish_msg.topic, message: publish_msg.message });
+                        ipc.channel_send(sub_channel_id, { type: "message", topic: publish_msg.topic, message: publish_msg.message });
                     }
 
                     break;
                 default:
-                    ipc.channel_send(channel_id, process.pid, { type: "error", message: "Unknown message type." });
+                    ipc.channel_send(channel_id, { type: "error", message: "Unknown message type." });
                     return;
             }
         }
 
         // register service to receive messages
-        ipc.service_register(SERVICE_NAME, process.pid, async (channel_id) => {
-            ipc.channel_listen(channel_id, process.pid, async (msg) => handle_message(channel_id, msg));
+        ipc.service_register(SERVICE_NAME, async (channel_id) => {
+            ipc.channel_listen(channel_id, async (msg) => handle_message(channel_id, msg));
         });
 
         return 0;
     }
-} as Program;
+} satisfies Program;

@@ -11,7 +11,7 @@ export default {
             "-j": "Indicates that the message is in JSON format, rather than plain text.",
         },
     },
-    compat: "2.0.0",
+    compat: "3.0.0",
     main: async (data) => {
         const {kernel, term, args, process} = data;
 
@@ -44,7 +44,7 @@ export default {
         }
 
         const ipc = kernel.get_ipc();
-        const channel = ipc.create_channel(process.pid, "lodestar");
+        const channel = await ipc.create_channel("lodestar");
 
         if (!channel) {
             term.writeln("Failed to create IPC channel to Lodestar service. Is the lodestard running?");
@@ -57,7 +57,7 @@ export default {
             message,
         };
 
-        ipc.channel_send(channel, process.pid, publish_msg);
+        ipc.channel_send(channel, publish_msg);
 
         if (typeof message === "object") {
             term.writeln(`Published JSON message to topic '${topic}': ${JSON.stringify(message)}`);
@@ -67,4 +67,4 @@ export default {
 
         return 0;
     }
-} as Program;
+} satisfies Program;
